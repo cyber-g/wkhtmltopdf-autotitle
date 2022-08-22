@@ -19,6 +19,14 @@ import subprocess
 for url in urls:
     # remove the newline character from the url
     url = url.rstrip()
+    # if URL begins with %, ignore line
+    if url.startswith('%'):
+        continue
+    # check that URL is valid
+    elif not re.match(r'^https?://.*', url):
+        raise Exception("Invalid URL")
+    # Print the url
+    print('Processing URL: ',url)
     # make a requests instance
     reqs = requests.get(url)
     # using the BeautifulSoup module
