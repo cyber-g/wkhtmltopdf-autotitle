@@ -1,13 +1,19 @@
+#!/usr/bin/env python3
+
 # get filename from command line with argparse
 import argparse
-
 parser = argparse.ArgumentParser()
-parser.add_argument('urlfilelist', help='File containing list of urls to pdf-fy')
+parser.add_argument('urlfilelist', help='Filename containing list of urls to pdf-fy')
 args = parser.parse_args()
 
 # read the file containing the urls
 with open(args.urlfilelist, 'r') as f:
     urls = f.readlines()
+
+import requests
+from bs4 import BeautifulSoup
+import re
+import subprocess
 
 # for each url in the file
 for url in urls:
@@ -25,9 +31,7 @@ for url in urls:
         title_ascii = re.sub(r'\W+ ', ' - ', title.get_text())
         # remove the extra spaces from the title
         title_ascii = re.sub(r' +', ' ', title_ascii)
-        # make a wkhtmltopdf instance
-        wkhtmltopdf = WKHtmlToPdf(url=url,output_file=title_ascii+'.pdf')
-        # render the pdf
-        wkhtmltopdf.render()
+        # call wkhtmltopdf
+        subprocess.run(['wkhtmltopdf', url, title_ascii+'.pdf'])
     else:
         raise Exception("No title found")
